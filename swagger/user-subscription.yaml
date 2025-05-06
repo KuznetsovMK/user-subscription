@@ -6,11 +6,10 @@ info:
 servers:
   - url: 'http://user-subscription/api'
 paths:
-  /users:
+  /user/find-all:
     get:
       operationId: findAllUsers
       summary: Returns a list of users.
-      description: Optional extended description in Markdown.
       responses:
         200:
           description: OK
@@ -20,6 +19,86 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/User'
+  /user/{id}:
+    get:
+      operationId: findUserById
+      summary: Returns info about user.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: a3e41663-159f-4af1-bf0b-0f50e25572e8
+      responses:
+        '200':
+          description: OK (successful operation)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User not found
+  /user/create:
+    post:
+      operationId: createUser
+      summary: Create new user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+      responses:
+        '201':
+          description: CREATED
+        '400':
+          description: Incorrect input
+        '404':
+          description: User not found
+  /user/update/{id}:
+    put:
+      operationId: updateUser
+      summary: Update user
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: a3e41663-159f-4af1-bf0b-0f50e25572e8
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+      responses:
+        '204':
+          description: NO_CONTENT
+        '400':
+          description: Incorrect input
+        '404':
+          description: User not found
+  /user/delete/{id}:
+    delete:
+      operationId: deleteUser
+      summary: Delete user
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: a3e41663-159f-4af1-bf0b-0f50e25572e8
+      responses:
+        '204':
+          description: NO_CONTENT
+        '400':
+          description: Incorrect input
+        '404':
+          description: User not found
 components:
   schemas:
     User:
@@ -35,3 +114,11 @@ components:
         fullName:
           type: string
           example: Соколов Даниил Егорович
+    UserRequest:
+      type: object
+      required:
+        - fullName
+      properties:
+        fullName:
+          type: string
+          example: "Степанов Платон Маркович"

@@ -1,0 +1,42 @@
+package web_rize.user_subscription.service;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import web_rize.user_subscription.entity.User;
+import web_rize.user_subscription.mapper.UserMapper;
+import web_rize.user_subscription.model.UserRequestDto;
+import web_rize.user_subscription.repository.UserRepository;
+
+import java.util.List;
+import java.util.UUID;
+
+@Service
+@RequiredArgsConstructor
+public class UserService {
+    private final UserRepository userRepository;
+    private final UserMapper userMapper;
+
+    public List<User> findAll() {
+        return userRepository.findAll();
+    }
+
+    public User findById(UUID id) {
+        return userRepository
+                .findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
+    public void save(User user) {
+        userRepository.save(user);
+    }
+
+    public void update(UUID id, UserRequestDto request) {
+        var exist = findById(id);
+        var updated = userMapper.updateEntity(exist, request);
+        userRepository.save(updated);
+    }
+
+    public void delete(UUID id) {
+        userRepository.deleteById(id);
+    }
+}
