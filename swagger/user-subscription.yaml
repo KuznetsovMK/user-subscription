@@ -8,6 +8,8 @@ servers:
 paths:
   /user/find-all:
     get:
+      tags:
+        - user
       operationId: findAllUsers
       summary: Returns a list of users.
       responses:
@@ -21,6 +23,8 @@ paths:
                   $ref: '#/components/schemas/User'
   /user/{id}:
     get:
+      tags:
+        - user
       operationId: findUserById
       summary: Returns info about user.
       parameters:
@@ -42,6 +46,8 @@ paths:
           description: User not found
   /user/create:
     post:
+      tags:
+        - user
       operationId: createUser
       summary: Create new user
       requestBody:
@@ -58,6 +64,8 @@ paths:
           description: User not found
   /user/update/{id}:
     put:
+      tags:
+        - user
       operationId: updateUser
       summary: Update user
       parameters:
@@ -82,6 +90,8 @@ paths:
           description: User not found
   /user/delete/{id}:
     delete:
+      tags:
+        - user
       operationId: deleteUser
       summary: Delete user
       parameters:
@@ -99,6 +109,108 @@ paths:
           description: Incorrect input
         '404':
           description: User not found
+  /user/{id}/find-subscriptions:
+    get:
+      tags:
+        - user-subscriptions
+      operationId: findUserSubscriptions
+      summary: Find user subscriptions
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: a3e41663-159f-4af1-bf0b-0f50e25572e8
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Subscription'
+        '404':
+          description: User not found
+  /user/{id}/add-subscription:
+    post:
+      tags:
+        - user-subscriptions
+      operationId: addSubscription
+      summary: Add subscription
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: a3e41663-159f-4af1-bf0b-0f50e25572e8
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubscriptionRequest'
+      responses:
+        '204':
+          description: NO_CONTENT
+        '400':
+          description: Incorrect input
+        '404':
+          description: Not found
+  /user/{id}/remove-subscription/{sub_id}:
+    delete:
+      tags:
+        - user-subscriptions
+      operationId: removeSubscription
+      summary: Remove subscription
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: a3e41663-159f-4af1-bf0b-0f50e25572e8
+        - name: sub_id
+          in: path
+          required: true
+          schema:
+            type: long
+            example: 2
+      responses:
+        '204':
+          description: NO_CONTENT
+        '400':
+          description: Incorrect input
+        '404':
+          description: Not found
+  /subscriptions/top:
+    get:
+      tags:
+        - subscriptions
+      operationId: topSubscriptions
+      summary: Find top subscriptions
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 3
+          example: 3
+          description: The numbers of items to return.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Subscription'
 components:
   schemas:
     User:
@@ -106,6 +218,7 @@ components:
       required:
         - id
         - fullName
+        - subscriptions
       properties:
         id:
           type: string
@@ -114,6 +227,22 @@ components:
         fullName:
           type: string
           example: Соколов Даниил Егорович
+        subscriptions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Subscription'
+    Subscription:
+      type: object
+      required:
+        - id
+        - title
+      properties:
+        id:
+          type: long
+          example: 1
+        title:
+          type: string
+          example: YouTube Premium
     UserRequest:
       type: object
       required:
@@ -121,4 +250,12 @@ components:
       properties:
         fullName:
           type: string
-          example: "Степанов Платон Маркович"
+          example: Степанов Платон Маркович
+    SubscriptionRequest:
+      type: object
+      required:
+        - title
+      properties:
+        title:
+          type: string
+          example: YouTube Premium

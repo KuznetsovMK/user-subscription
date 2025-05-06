@@ -9,6 +9,7 @@ import web_rize.user_subscription.model.UserRequestDto;
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 
+    @Mapping(target = "subscriptions", ignore = true)
     @Mapping(target = "id", ignore = true)
     User updateEntity(@MappingTarget User user, UserRequestDto request);
 }

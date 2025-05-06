@@ -2,6 +2,7 @@ package web_rize.user_subscription.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import web_rize.user_subscription.entity.Subscription;
 import web_rize.user_subscription.entity.User;
 import web_rize.user_subscription.mapper.UserMapper;
 import web_rize.user_subscription.model.UserRequestDto;
@@ -24,6 +25,13 @@ public class UserService {
         return userRepository
                 .findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
+    public List<Subscription> findUserSubscriptions(UUID id) {
+        return findById(id)
+                .getSubscriptions()
+                .stream()
+                .toList();
     }
 
     public void save(User user) {
