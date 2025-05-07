@@ -35,17 +35,20 @@ public class SubscriptionService {
     }
 
     private List<Subscription> counting(List<User> users, Integer limit) {
-        LOGGER.info("Начинается подсчёт самых популярных подписок");
-        return users
-                .stream()
-                .flatMap(user -> user.getSubscriptions().stream())
-                .collect(Collectors.groupingBy(Function.identity(),
-                        Collectors.counting()))
-                .entrySet()
-                .stream()
-                .sorted(Map.Entry.<Subscription, Long>comparingByValue().reversed())
-                .limit(limit)
-                .map(Map.Entry::getKey)
-                .toList();
+        var top =
+                users
+                        .stream()
+                        .flatMap(user -> user.getSubscriptions().stream())
+                        .collect(Collectors.groupingBy(Function.identity(),
+                                Collectors.counting()))
+                        .entrySet()
+                        .stream()
+                        .sorted(Map.Entry.<Subscription, Long>comparingByValue().reversed())
+                        .limit(limit)
+                        .map(Map.Entry::getKey)
+                        .toList();
+
+        LOGGER.info("Подсчёт самых популярных подписок завершен");
+        return top;
     }
 }

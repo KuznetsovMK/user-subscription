@@ -21,7 +21,6 @@ public class SubscriptionController implements SubscriptionsApi {
 
     @Override
     public ResponseEntity<List<SubscriptionDto>> topSubscriptions(Integer limit) {
-        LOGGER.info("Поиск топ {} самых популярных подписок", limit);
         var top = subscriptionService.findTop(limit);
         return ResponseEntity.ok(subscriptionRestMapper.toDto(top));
     }
