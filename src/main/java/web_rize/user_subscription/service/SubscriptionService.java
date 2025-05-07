@@ -1,6 +1,8 @@
 package web_rize.user_subscription.service;
 
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import web_rize.user_subscription.entity.Subscription;
 import web_rize.user_subscription.entity.User;
@@ -15,6 +17,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class SubscriptionService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(SubscriptionService.class);
     private final SubscriptionRepository subscriptionRepository;
     private final UserService userService;
 
@@ -32,14 +35,20 @@ public class SubscriptionService {
     }
 
     private List<Subscription> counting(List<User> users, Integer limit) {
-        return users.stream()
-                .flatMap(user -> user.getSubscriptions().stream())
-                .collect(Collectors.groupingBy(Function.identity(),
-                        Collectors.counting()))
-                .entrySet()
-                .stream()
-                .sorted(Map.Entry.<Subscription, Long>comparingByValue().reversed())
-                .map(Map.Entry::getKey)
-                .toList();
+        var top =
+                users
+                        .stream()
+                        .flatMap(user -> user.getSubscriptions().stream())
+                        .collect(Collectors.groupingBy(Function.identity(),
+                                Collectors.counting()))
+                        .entrySet()
+                        .stream()
+                        .sorted(Map.Entry.<Subscription, Long>comparingByValue().reversed())
+                        .limit(limit)
+                        .map(Map.Entry::getKey)
+                        .toList();
+
+        LOGGER.info("Подсчёт самых популярных подписок завершен");
+        return top;
     }
 }

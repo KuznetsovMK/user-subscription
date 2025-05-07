@@ -1,6 +1,8 @@
 package web_rize.user_subscription.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import web_rize.user_subscription.api.SubscriptionsApi;
@@ -13,6 +15,7 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 public class SubscriptionController implements SubscriptionsApi {
+    private static final Logger LOGGER = LoggerFactory.getLogger(SubscriptionController.class);
     private final SubscriptionService subscriptionService;
     private final SubscriptionRestMapper subscriptionRestMapper;
 
