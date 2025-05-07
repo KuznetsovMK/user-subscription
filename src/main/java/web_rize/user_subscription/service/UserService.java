@@ -21,7 +21,7 @@ public class UserService {
     private final UserMapper userMapper;
 
     public List<User> findAll() {
-        return userRepository.findAll();
+        return userRepository.findAllByOrderByFullName();
     }
 
     public User findById(UUID id) {
@@ -37,6 +37,7 @@ public class UserService {
         return findById(id)
                 .getSubscriptions()
                 .stream()
+                .sorted()
                 .toList();
     }
 
