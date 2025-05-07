@@ -1,6 +1,8 @@
 package web_rize.user_subscription.service;
 
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import web_rize.user_subscription.entity.Subscription;
 import web_rize.user_subscription.entity.User;
@@ -14,6 +16,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class UserService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 
@@ -24,7 +27,10 @@ public class UserService {
     public User findById(UUID id) {
         return userRepository
                 .findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> {
+                    LOGGER.error("Пользователь id: {} не найден", id);
+                    return new RuntimeException("User not found");
+                });
     }
 
     public List<Subscription> findUserSubscriptions(UUID id) {
