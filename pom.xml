@@ -69,6 +69,10 @@
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
@@ -121,7 +125,7 @@
                         </goals>
                         <configuration>
                             <language>spring</language>
-                            <inputSpec>${project.basedir}/swagger/user-subscription.yaml
+                            <inputSpec>src/main/resources/swagger/user-subscription.yaml
                             </inputSpec>
                             <configOptions>
                                 <sourceFolder>swagger</sourceFolder>
