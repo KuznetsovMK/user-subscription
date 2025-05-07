@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import web_rize.user_subscription.entity.Subscription;
 import web_rize.user_subscription.entity.User;
+import web_rize.user_subscription.exception.NotFoundException;
 import web_rize.user_subscription.mapper.UserMapper;
 import web_rize.user_subscription.model.UserRequestDto;
 import web_rize.user_subscription.repository.UserRepository;
@@ -29,7 +30,7 @@ public class UserService {
                 .findById(id)
                 .orElseThrow(() -> {
                     LOGGER.error("Пользователь id: {} не найден", id);
-                    return new RuntimeException("User not found");
+                    return new NotFoundException("User not found");
                 });
     }
 

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import web_rize.user_subscription.exception.NotFoundException;
 import web_rize.user_subscription.model.SubscriptionRequestDto;
 
 import java.util.UUID;
@@ -29,7 +30,7 @@ public class UserSubscriptionService {
                 .findById(subId)
                 .orElseThrow(() -> {
                     LOGGER.error("Подписка id: {} not found", subId);
-                    return new RuntimeException("Sub not found");
+                    return new NotFoundException("Subscription not found");
                 });
 
         user.unsubscribe(sub);
